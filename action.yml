@@ -7,10 +7,6 @@ branding:
   color: 'blue'
 
 inputs:
-  image-tag:
-    description: 'Docker image tag to use (e.g. latest, v1.0.0, sha-abc1234)'
-    required: false
-    default: 'latest'
   servers:
     description: 'Comma-separated list of servers to start, or "all". Options: no-security, userpass, certificate, all-security, discovery, auto-accept, sign-only, legacy-security'
     required: false
@@ -28,43 +24,21 @@ outputs:
 runs:
   using: 'composite'
   steps:
-    - name: Determine image name
-      id: image
-      shell: bash
-      run: |
-        # Use the action's own repository as image source
-        ACTION_REPO="${{ github.action_repository }}"
-        if [ -z "$ACTION_REPO" ]; then
-          ACTION_REPO="${{ github.repository }}"
-        fi
-        IMAGE="ghcr.io/${ACTION_REPO,,}:${{ inputs.image-tag }}"
-        echo "image=$IMAGE" >> "$GITHUB_OUTPUT"
-        echo "Using image: $IMAGE"
-
-    - name: Pull server image
-      shell: bash
-      run: docker pull "${{ steps.image.outputs.image }}"
-
-    - name: Checkout action repo for compose and scripts
+    - name: Checkout server suite
       uses: actions/checkout@v4
       with:
-        repository: ${{ github.action_repository || github.repository }}
+        repository: GianfriAur/opcua-test-server-suite
         path: .opcua-test-server-suite
-        sparse-checkout: |
-          docker-compose.ci.yml
-          scripts/generate-certs.sh
 
     - name: Select servers to start
       id: profiles
       shell: bash
       run: |
-        cd .opcua-test-server-suite
         SERVERS="${{ inputs.servers }}"
 
         if [ "$SERVERS" = "all" ]; then
           echo "compose-args=" >> "$GITHUB_OUTPUT"
         else
-          # Build --scale flags to disable unwanted servers
           ALL_SERVICES="opcua-no-security opcua-userpass opcua-certificate opcua-all-security opcua-discovery opcua-auto-accept opcua-sign-only opcua-legacy-security"
           WANTED=""
           IFS=',' read -ra ITEMS <<< "$SERVERS"
@@ -82,80 +56,21 @@ runs:
           echo "compose-args=$SCALE_ARGS" >> "$GITHUB_OUTPUT"
         fi
 
-    - name: Start servers
+    - name: Build and start servers
       shell: bash
-      env:
-        OPCUA_SERVER_IMAGE: ${{ steps.image.outputs.image }}
-      run: |
-        cd .opcua-test-server-suite
-        docker compose -f docker-compose.ci.yml up -d ${{ steps.profiles.outputs.compose-args }}
+      working-directory: .opcua-test-server-suite
+      run: docker compose up -d --build --wait --wait-timeout ${{ inputs.wait-timeout }} ${{ steps.profiles.outputs.compose-args }}
 
-    - name: Wait for servers to be ready
-      shell: bash
-      run: |
-        TIMEOUT=${{ inputs.wait-timeout }}
-        SERVERS="${{ inputs.servers }}"
-
-        declare -A PORT_MAP
-        PORT_MAP[opcua-no-security]=4840
-        PORT_MAP[opcua-userpass]=4841
-        PORT_MAP[opcua-certificate]=4842
-        PORT_MAP[opcua-all-security]=4843
-        PORT_MAP[opcua-discovery]=4844
-        PORT_MAP[opcua-auto-accept]=4845
-        PORT_MAP[opcua-sign-only]=4846
-        PORT_MAP[opcua-legacy-security]=4847
-
-        PORTS_TO_CHECK=()
-        if [ "$SERVERS" = "all" ]; then
-          PORTS_TO_CHECK=(4840 4841 4842 4843 4844 4845 4846 4847)
-        else
-          IFS=',' read -ra ITEMS <<< "$SERVERS"
-          for item in "${ITEMS[@]}"; do
-            trimmed=$(echo "$item" | xargs)
-            key="opcua-${trimmed}"
-            if [ -n "${PORT_MAP[$key]}" ]; then
-              PORTS_TO_CHECK+=("${PORT_MAP[$key]}")
-            fi
-          done
-        fi
-
-        echo "Waiting for servers on ports: ${PORTS_TO_CHECK[*]}"
-        START=$(date +%s)
-
-        for port in "${PORTS_TO_CHECK[@]}"; do
-          while true; do
-            ELAPSED=$(( $(date +%s) - START ))
-            if [ "$ELAPSED" -ge "$TIMEOUT" ]; then
-              echo "::error::Timeout waiting for port $port after ${TIMEOUT}s"
-              cd .opcua-test-server-suite
-              docker compose -f docker-compose.ci.yml logs
-              exit 1
-            fi
-            if nc -z localhost "$port" 2>/dev/null; then
-              echo "Port $port is ready (${ELAPSED}s)"
-              break
-            fi
-            sleep 1
-          done
-        done
-        echo "All servers are ready!"
-
-    - name: Extract certificates to host
+    - name: Extract certificates
       id: extract-certs
       shell: bash
       run: |
-        CERTS_DIR="${RUNNER_TEMP}/opcua-certs"
-        mkdir -p "$CERTS_DIR"
-
-        # Copy certs from the volume via a temporary container
-        VOLUME_NAME=$(docker volume ls -q | grep certs-volume | head -1)
-        if [ -n "$VOLUME_NAME" ]; then
-          docker run --rm -v "${VOLUME_NAME}:/certs:ro" -v "${CERTS_DIR}:/out" alpine sh -c "cp -r /certs/* /out/"
-          echo "Certificates extracted to: $CERTS_DIR"
-          ls -la "$CERTS_DIR"/ca/ "$CERTS_DIR"/client/ "$CERTS_DIR"/server/ 2>/dev/null || true
-        else
-          echo "::warning::Could not find certs volume"
+        CERTS_DIR=".opcua-test-server-suite/certs"
+        if [ ! -d "$CERTS_DIR/ca" ]; then
+          echo "::error::Certificates not found at $CERTS_DIR"
+          ls -la "$CERTS_DIR" 2>/dev/null || echo "Directory does not exist"
+          exit 1
         fi
-
-        echo "certs-dir=$CERTS_DIR" >> "$GITHUB_OUTPUT"
+        sudo chmod -R a+r "$CERTS_DIR"
+        echo "Certificates available at: $CERTS_DIR"
+        echo "certs-dir=$(realpath $CERTS_DIR)" >> "$GITHUB_OUTPUT"

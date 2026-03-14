@@ -1,6 +1,24 @@
 # Changelog
 
-## 2026-03-14
+## v1.1.0 — 2026-03-14
+
+### GitHub Action e CI
+
+- **action.yml**: Corretto il bug che usava `github.action_repository` (vuoto nei
+  composite action) con fallback su `github.repository`, causando il pull
+  dell'immagine Docker sbagliata (`opcua-php` invece di `opcua-test-server-suite`).
+  Il nome dell'immagine GHCR è ora hardcoded correttamente.
+
+- **action.yml**: Aggiunto step di login a GHCR con `github.token` per supportare
+  immagini private.
+
+- **action.yml**: I certificati vengono ora letti direttamente dal bind mount
+  (`./certs`) invece di estrarli da un Docker volume tramite container temporaneo,
+  eliminando i problemi di nomi di volume non trovati in CI.
+
+- **docker-compose.ci.yml**: Cambiato da Docker volume (`certs-volume`) a bind mount
+  (`./certs`), allineato con `docker-compose.yml`. I certificati sono accessibili
+  direttamente sul filesystem host senza estrazione.
 
 ### Certificati e PKI
 
@@ -22,7 +40,7 @@
 
 - **docker-compose.yml**: Cambiato da Docker volume (`certs-volume`) a bind mount
   (`./certs`) per rendere i certificati generati accessibili dall'host, necessario
-  per i test di integrazione PHP che referenziano direttamente i file certificato.
+  per i test di integrazione che referenziano direttamente i file certificato.
 
 ### Address Space
 

@@ -18,7 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: GianfriAur/opcua-test-server-suite@v1
+      - uses: GianfriAur/opcua-test-server-suite@v1.1.0
 
       - run: cargo test  # or npm test, pytest, dotnet test, etc.
 ```
@@ -39,7 +39,7 @@ jobs:
 
       - name: Start OPC UA test servers
         id: opcua
-        uses: GianfriAur/opcua-test-server-suite@v1
+        uses: GianfriAur/opcua-test-server-suite@v1.1.0
         with:
           # Which servers to start (default: all)
           servers: 'no-security,userpass,certificate'
@@ -56,7 +56,7 @@ jobs:
 
       - name: Use client certificates
         run: |
-          # Certificates are extracted to the host filesystem
+          # Certificates are available directly on the filesystem
           ls ${{ steps.opcua.outputs.certs-dir }}/client/
           # Use certs/client/cert.pem and certs/client/key.pem
           # for certificate-based authentication tests
@@ -66,7 +66,7 @@ jobs:
 
 | Input | Default | Description |
 |---|---|---|
-| `image-tag` | `latest` | Docker image tag. Use `latest` for newest, or pin a version like `v1.0.0` |
+| `image-tag` | `latest` | Docker image tag. Use `latest` for newest, or pin a version like `v1.1.0` |
 | `servers` | `all` | Comma-separated list of servers to start. Options: `no-security`, `userpass`, `certificate`, `all-security`, `discovery`, `auto-accept`, `sign-only`, `legacy-security` |
 | `wait-timeout` | `120` | Seconds to wait for all servers to be ready before failing |
 
@@ -74,7 +74,7 @@ jobs:
 
 | Output | Description |
 |---|---|
-| `certs-dir` | Absolute path to extracted certificates on the runner. Contains `ca/`, `server/`, `client/`, `self-signed/`, `expired/` subdirectories |
+| `certs-dir` | Absolute path to certificates on the runner. Contains `ca/`, `server/`, `client/`, `self-signed/`, `expired/` subdirectories |
 
 ### Server Selection
 
@@ -82,17 +82,17 @@ Start only the servers you need to save CI time:
 
 ```yaml
 # Only no-security for basic tests
-- uses: GianfriAur/opcua-test-server-suite@v1
+- uses: GianfriAur/opcua-test-server-suite@v1.1.0
   with:
     servers: 'no-security'
 
 # Security tests only
-- uses: GianfriAur/opcua-test-server-suite@v1
+- uses: GianfriAur/opcua-test-server-suite@v1.1.0
   with:
     servers: 'userpass,certificate,all-security'
 
 # All servers (default)
-- uses: GianfriAur/opcua-test-server-suite@v1
+- uses: GianfriAur/opcua-test-server-suite@v1.1.0
 ```
 
 ### Available Servers and Ports
@@ -110,11 +110,11 @@ Start only the servers you need to save CI time:
 
 ### Using Certificates in Tests
 
-The action extracts all generated certificates to the runner filesystem. Access them via the `certs-dir` output:
+The action makes all generated certificates available on the runner filesystem via the `certs-dir` output:
 
 ```yaml
 - id: opcua
-  uses: GianfriAur/opcua-test-server-suite@v1
+  uses: GianfriAur/opcua-test-server-suite@v1.1.0
 
 - run: |
     # Trusted client certificate (signed by CA)
@@ -137,7 +137,7 @@ The action extracts all generated certificates to the runner filesystem. Access 
 
 ```yaml
 # Pin to a specific release (recommended for stability)
-- uses: GianfriAur/opcua-test-server-suite@v1.0.0
+- uses: GianfriAur/opcua-test-server-suite@v1.1.0
 
 # Use latest from main branch
 - uses: GianfriAur/opcua-test-server-suite@main
@@ -155,8 +155,8 @@ The `image-tag` input controls which Docker image version is pulled. By default 
 For GitLab CI, Jenkins, CircleCI, or local testing, use `docker-compose.ci.yml` directly:
 
 ```bash
-# Set the image (replace with your actual ghcr.io path)
-export OPCUA_SERVER_IMAGE=ghcr.io/GianfriAur/opcua-test-server-suite:latest
+# Set the image
+export OPCUA_SERVER_IMAGE=ghcr.io/gianfriaur/opcua-test-server-suite:latest
 
 # Pull and start
 docker pull "$OPCUA_SERVER_IMAGE"
@@ -168,11 +168,14 @@ for port in 4840 4841 4842 4843 4844 4845 4846 4847; do
   echo "Port $port ready"
 done
 
+# Certificates are available at ./certs/
+export OPCUA_CERTS_DIR=./certs
+
 # Run your tests
 your-test-command
 
 # Cleanup
-docker compose -f docker-compose.ci.yml down -v
+docker compose -f docker-compose.ci.yml down
 ```
 
 ### GitLab CI Example
@@ -183,7 +186,7 @@ integration-tests:
   services:
     - docker:24-dind
   variables:
-    OPCUA_SERVER_IMAGE: ghcr.io/GianfriAur/opcua-test-server-suite:latest
+    OPCUA_SERVER_IMAGE: ghcr.io/gianfriaur/opcua-test-server-suite:latest
   before_script:
     - apk add --no-cache docker-compose
     - docker pull "$OPCUA_SERVER_IMAGE"
@@ -192,7 +195,7 @@ integration-tests:
   script:
     - your-test-command
   after_script:
-    - docker compose -f docker-compose.ci.yml down -v
+    - docker compose -f docker-compose.ci.yml down
 ```
 
 ---
@@ -208,4 +211,5 @@ cd opcua-test-server-suite
 docker compose up -d
 
 # Ports 4840-4847 are now available on localhost
+# Certificates are at ./certs/
 ```

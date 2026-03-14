@@ -5,7 +5,7 @@ services:
     command: >
       sh -c "apk add --no-cache openssl bash && bash /scripts/generate-certs.sh"
     volumes:
-      - certs-volume:/certs
+      - ./certs:/certs
       - ./scripts/generate-certs.sh:/scripts/generate-certs.sh:ro
     environment:
       CERTS_DIR: /certs
@@ -23,7 +23,7 @@ services:
       OPCUA_AUTH_USERS: "false"
       OPCUA_AUTH_CERTIFICATE: "false"
     volumes:
-      - certs-volume:/app/certs:ro
+      - ./certs:/app/certs:ro
     depends_on:
       certs-generator:
         condition: service_completed_successfully
@@ -43,7 +43,7 @@ services:
       OPCUA_CERTIFICATE_FILE: "/app/certs/server/cert.pem"
       OPCUA_PRIVATE_KEY_FILE: "/app/certs/server/key.pem"
     volumes:
-      - certs-volume:/app/certs:ro
+      - ./certs:/app/certs:ro
     depends_on:
       certs-generator:
         condition: service_completed_successfully
@@ -65,7 +65,7 @@ services:
       OPCUA_TRUSTED_CERTS_DIR: "/app/certs/trusted"
       OPCUA_REJECTED_CERTS_DIR: "/app/certs/rejected"
     volumes:
-      - certs-volume:/app/certs:ro
+      - ./certs:/app/certs:ro
     depends_on:
       certs-generator:
         condition: service_completed_successfully
@@ -87,7 +87,7 @@ services:
       OPCUA_TRUSTED_CERTS_DIR: "/app/certs/trusted"
       OPCUA_REJECTED_CERTS_DIR: "/app/certs/rejected"
     volumes:
-      - certs-volume:/app/certs:ro
+      - ./certs:/app/certs:ro
     depends_on:
       certs-generator:
         condition: service_completed_successfully
@@ -107,7 +107,7 @@ services:
       OPCUA_CERTIFICATE_FILE: "/app/certs/server/cert.pem"
       OPCUA_PRIVATE_KEY_FILE: "/app/certs/server/key.pem"
     volumes:
-      - certs-volume:/app/certs:ro
+      - ./certs:/app/certs:ro
     depends_on:
       certs-generator:
         condition: service_completed_successfully
@@ -128,7 +128,7 @@ services:
       OPCUA_CERTIFICATE_FILE: "/app/certs/server/cert.pem"
       OPCUA_PRIVATE_KEY_FILE: "/app/certs/server/key.pem"
     volumes:
-      - certs-volume:/app/certs:ro
+      - ./certs:/app/certs:ro
     depends_on:
       certs-generator:
         condition: service_completed_successfully
@@ -149,7 +149,7 @@ services:
       OPCUA_CERTIFICATE_FILE: "/app/certs/server/cert.pem"
       OPCUA_PRIVATE_KEY_FILE: "/app/certs/server/key.pem"
     volumes:
-      - certs-volume:/app/certs:ro
+      - ./certs:/app/certs:ro
     depends_on:
       certs-generator:
         condition: service_completed_successfully
@@ -170,10 +170,7 @@ services:
       OPCUA_CERTIFICATE_FILE: "/app/certs/server/cert.pem"
       OPCUA_PRIVATE_KEY_FILE: "/app/certs/server/key.pem"
     volumes:
-      - certs-volume:/app/certs:ro
+      - ./certs:/app/certs:ro
     depends_on:
       certs-generator:
         condition: service_completed_successfully
-
-volumes:
-  certs-volume:

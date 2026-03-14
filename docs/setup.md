@@ -34,8 +34,9 @@ docker compose logs -f
 # Stop all servers
 docker compose down
 
-# Stop and remove volumes (including generated certificates)
-docker compose down -v
+# Stop and remove generated certificates
+docker compose down
+rm -rf ./certs
 ```
 
 ## Rebuilding
@@ -49,11 +50,11 @@ docker compose up -d
 
 ## Certificate Regeneration
 
-Certificates are auto-generated on first startup by the `certs-generator` container. To force regeneration:
+Certificates are auto-generated on first startup by the `certs-generator` container and stored in `./certs/`. To force regeneration:
 
 ```bash
-# Remove the certificate volume and restart
-docker compose down -v
+# Remove the certificates directory and restart
+rm -rf ./certs
 docker compose up -d
 ```
 
