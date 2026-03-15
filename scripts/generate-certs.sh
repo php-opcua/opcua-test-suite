@@ -9,6 +9,18 @@ echo "OPC UA Certificate Generator"
 echo "============================================"
 echo "Output directory: ${CERTS_DIR}"
 
+# Skip generation if certificates already exist (use FORCE_REGEN=1 to regenerate)
+if [ "${FORCE_REGEN}" != "1" ] && \
+   [ -f "${CERTS_DIR}/ca/ca-cert.pem" ] && \
+   [ -f "${CERTS_DIR}/server/cert.pem" ] && \
+   [ -f "${CERTS_DIR}/client/cert.pem" ]; then
+  echo ""
+  echo "Certificates already exist, skipping generation."
+  echo "Set FORCE_REGEN=1 or delete ${CERTS_DIR} to regenerate."
+  echo "============================================"
+  exit 0
+fi
+
 # Clean and create directories
 rm -rf "${CERTS_DIR}/ca" "${CERTS_DIR}/server" "${CERTS_DIR}/client" "${CERTS_DIR}/self-signed" "${CERTS_DIR}/expired"
 mkdir -p "${CERTS_DIR}"/{ca,server,client,self-signed,expired,trusted,rejected,pki/{own/certs,own/private,trusted/certs,rejected/certs,issuers/certs,issuers/crl}}
