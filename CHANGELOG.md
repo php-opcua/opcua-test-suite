@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.1.2 — 2026-03-16
+
+### Actions
+- **action.yml**: update action\checkout to v6
+- **.github/workflows/docker-publish.yml**: update action\checkout to v6
 ## v1.1.1 — 2026-03-15
 
 ### Docker

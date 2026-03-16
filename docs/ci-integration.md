@@ -18,7 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: GianfriAur/opcua-test-server-suite@v1.1.1
+      - uses: GianfriAur/opcua-test-server-suite@v1.1.2
 
       - run: cargo test  # or npm test, pytest, dotnet test, etc.
 ```
@@ -39,7 +39,7 @@ jobs:
 
       - name: Start OPC UA test servers
         id: opcua
-        uses: GianfriAur/opcua-test-server-suite@v1.1.1
+        uses: GianfriAur/opcua-test-server-suite@v1.1.2
         with:
           # Which servers to start (default: all)
           servers: 'no-security,userpass,certificate'
@@ -82,17 +82,17 @@ Start only the servers you need to save CI time:
 
 ```yaml
 # Only no-security for basic tests
-- uses: GianfriAur/opcua-test-server-suite@v1.1.1
+- uses: GianfriAur/opcua-test-server-suite@v1.1.2
   with:
     servers: 'no-security'
 
 # Security tests only
-- uses: GianfriAur/opcua-test-server-suite@v1.1.1
+- uses: GianfriAur/opcua-test-server-suite@v1.1.2
   with:
     servers: 'userpass,certificate,all-security'
 
 # All servers (default)
-- uses: GianfriAur/opcua-test-server-suite@v1.1.1
+- uses: GianfriAur/opcua-test-server-suite@v1.1.2
 ```
 
 ### Available Servers and Ports
@@ -114,7 +114,7 @@ The action makes all generated certificates available on the runner filesystem v
 
 ```yaml
 - id: opcua
-  uses: GianfriAur/opcua-test-server-suite@v1.1.1
+  uses: GianfriAur/opcua-test-server-suite@v1.1.2
 
 - run: |
     # Trusted client certificate (signed by CA)
@@ -137,7 +137,7 @@ The action makes all generated certificates available on the runner filesystem v
 
 ```yaml
 # Pin to a specific release (recommended for stability)
-- uses: GianfriAur/opcua-test-server-suite@v1.1.1
+- uses: GianfriAur/opcua-test-server-suite@v1.1.2
 
 # Use latest from main branch
 - uses: GianfriAur/opcua-test-server-suite@main
