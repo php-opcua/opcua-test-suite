@@ -1,4 +1,4 @@
-name: 'OPC UA Test Server Suite'
+name: 'OPC UA Test Suite'
 description: 'Start 8 pre-configured OPCUA/OPC UA test servers covering all security policies and auth methods.'
 author: 'Gianfrancesco Aurecchia'
 
