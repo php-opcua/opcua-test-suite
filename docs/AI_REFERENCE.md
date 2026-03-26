@@ -4,7 +4,7 @@ Single-file reference optimized for AI consumption. Contains every fact needed t
 
 ## Project Identity
 
-- **Name:** `opcua-test-server-suite`
+- **Name:** `opcua-test-suite`
 - **Runtime:** Node.js (CommonJS `require`)
 - **OPC UA SDK:** `node-opcua` v2.x
 - **Deployment:** Docker Compose (8 containers from 1 codebase)

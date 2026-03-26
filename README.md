@@ -1,6 +1,6 @@
-# OPC UA Test Server Suite
+# OPC UA Test Suite
 
-A comprehensive, ready-to-use OPC UA server suite built specifically for **integration testing of OPC UA client libraries**. It provides 8 pre-configured server instances covering every major security policy, authentication method, and communication mode defined by the OPC UA specification.
+A comprehensive, ready-to-use OPC UA suite built specifically for **integration testing of OPC UA client libraries**. It provides 8 pre-configured server instances covering every major security policy, authentication method, and communication mode defined by the OPC UA specification.
 
 Whether you're building an OPC UA client in Rust, C#, Python, Go, Java, or any other language, this suite gives you a realistic test environment with ~270 nodes, 12 callable methods, dynamic variables, events, alarms, historical data, structured objects, and custom extension objects — all running with a single `docker compose up`.
 
@@ -76,7 +76,7 @@ This repository is also a **reusable GitHub Action**. Add a single step to your 
 steps:
   - uses: actions/checkout@v4
 
-  - uses: GianfriAur/opcua-test-server-suite@v1.1.4
+  - uses: php-opcua/opcua-test-suite@v1.1.4
 
   - run: cargo test  # or npm test, pytest, dotnet test, etc.
 ```
@@ -85,7 +85,7 @@ You can select which servers to start, set timeouts, and access the generated ce
 
 ```yaml
 - id: opcua
-  uses: GianfriAur/opcua-test-server-suite@v1.1.4
+  uses: php-opcua/opcua-test-suite@v1.1.4
   with:
     servers: 'no-security,userpass,certificate'
     wait-timeout: '90'
@@ -95,7 +95,7 @@ You can select which servers to start, set timeouts, and access the generated ce
     OPCUA_CERTS_DIR: ${{ steps.opcua.outputs.certs-dir }}
 ```
 
-For real-world usage examples, see the CI workflows in [opcua-php-client](https://github.com/GianfriAur/opcua-php-client), [opcua-php-client-session-manager](https://github.com/GianfriAur/opcua-php-client-session-manager), and [opcua-laravel-client](https://github.com/GianfriAur/opcua-laravel-client).
+For real-world usage examples, see the CI workflows in [opcua-client](https://github.com/php-opcua/opcua-client), [opcua-session-manager](https://github.com/php-opcua/opcua-session-manager), and [laravel-opcua](https://github.com/php-opcua/laravel-opcua).
 
 For the full integration guide with all options, certificate usage, version pinning, and examples for other CI systems (GitLab, Jenkins), see **[docs/ci-integration.md](docs/ci-integration.md)**.
 
@@ -135,7 +135,7 @@ Detailed documentation is available in the [`docs/`](docs/) folder:
 
 ## Support
 
-For bug reports, feature requests, or questions, please open an issue on [GitHub Issues](https://github.com/GianfriAur/opcua-test-server-suite/issues).
+For bug reports, feature requests, or questions, please open an issue on [GitHub Issues](https://github.com/php-opcua/opcua-test-suite/issues).
 
 ## AI Disclosure
 

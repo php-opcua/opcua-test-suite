@@ -18,7 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: GianfriAur/opcua-test-server-suite@v1.1.4
+      - uses: php-opcua/opcua-test-suite@v1.1.4
 
       - run: cargo test  # or npm test, pytest, dotnet test, etc.
 ```
@@ -39,7 +39,7 @@ jobs:
 
       - name: Start OPC UA test servers
         id: opcua
-        uses: GianfriAur/opcua-test-server-suite@v1.1.4
+        uses: php-opcua/opcua-test-suite@v1.1.4
         with:
           # Which servers to start (default: all)
           servers: 'no-security,userpass,certificate'
@@ -82,17 +82,17 @@ Start only the servers you need to save CI time:
 
 ```yaml
 # Only no-security for basic tests
-- uses: GianfriAur/opcua-test-server-suite@v1.1.4
+- uses: php-opcua/opcua-test-suite@v1.1.4
   with:
     servers: 'no-security'
 
 # Security tests only
-- uses: GianfriAur/opcua-test-server-suite@v1.1.4
+- uses: php-opcua/opcua-test-suite@v1.1.4
   with:
     servers: 'userpass,certificate,all-security'
 
 # All servers (default)
-- uses: GianfriAur/opcua-test-server-suite@v1.1.4
+- uses: php-opcua/opcua-test-suite@v1.1.4
 ```
 
 ### Available Servers and Ports
@@ -114,7 +114,7 @@ The action makes all generated certificates available on the runner filesystem v
 
 ```yaml
 - id: opcua
-  uses: GianfriAur/opcua-test-server-suite@v1.1.4
+  uses: php-opcua/opcua-test-suite@v1.1.4
 
 - run: |
     # Trusted client certificate (signed by CA)
@@ -137,13 +137,13 @@ The action makes all generated certificates available on the runner filesystem v
 
 ```yaml
 # Pin to a specific release (recommended for stability)
-- uses: GianfriAur/opcua-test-server-suite@v1.1.4
+- uses: php-opcua/opcua-test-suite@v1.1.4
 
 # Use latest from main branch
-- uses: GianfriAur/opcua-test-server-suite@main
+- uses: php-opcua/opcua-test-suite@main
 
 # Pin to a specific commit
-- uses: GianfriAur/opcua-test-server-suite@sha-abc1234
+- uses: php-opcua/opcua-test-suite@sha-abc1234
 ```
 
 The `image-tag` input controls which Docker image version is pulled. By default it matches the action version.
@@ -156,7 +156,7 @@ For GitLab CI, Jenkins, CircleCI, or local testing, use `docker-compose.ci.yml` 
 
 ```bash
 # Set the image
-export OPCUA_SERVER_IMAGE=ghcr.io/gianfriaur/opcua-test-server-suite:latest
+export OPCUA_SERVER_IMAGE=ghcr.io/php-opcua/opcua-test-suite:latest
 
 # Pull and start
 docker pull "$OPCUA_SERVER_IMAGE"
@@ -186,7 +186,7 @@ integration-tests:
   services:
     - docker:24-dind
   variables:
-    OPCUA_SERVER_IMAGE: ghcr.io/gianfriaur/opcua-test-server-suite:latest
+    OPCUA_SERVER_IMAGE: ghcr.io/php-opcua/opcua-test-suite:latest
   before_script:
     - apk add --no-cache docker-compose
     - docker pull "$OPCUA_SERVER_IMAGE"
@@ -206,8 +206,8 @@ For local testing without Docker image registry:
 
 ```bash
 # Clone and start (builds from source)
-git clone https://github.com/GianfriAur/opcua-test-server-suite.git
-cd opcua-test-server-suite
+git clone https://github.com/php-opcua/opcua-test-suite.git
+cd opcua-test-suite
 docker compose up -d
 
 # Ports 4840-4847 are now available on localhost

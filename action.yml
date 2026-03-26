@@ -1,6 +1,6 @@
 name: 'OPC UA Test Server Suite'
 description: 'Start 8 pre-configured OPCUA/OPC UA test servers covering all security policies and auth methods.'
-author: 'GianfriAur'
+author: 'Gianfrancesco Aurecchia'
 
 branding:
   icon: 'server'
@@ -27,8 +27,8 @@ runs:
     - name: Checkout server suite
       uses: actions/checkout@v6
       with:
-        repository: GianfriAur/opcua-test-server-suite
-        path: .opcua-test-server-suite
+        repository: php-opcua/opcua-test-suite
+        path: .opcua-test-suite
 
     - name: Select servers to start
       id: profiles
@@ -58,14 +58,14 @@ runs:
 
     - name: Build and start servers
       shell: bash
-      working-directory: .opcua-test-server-suite
+      working-directory: .opcua-test-suite
       run: docker compose up -d --build --wait --wait-timeout ${{ inputs.wait-timeout }} ${{ steps.profiles.outputs.compose-args }}
 
     - name: Extract certificates
       id: extract-certs
       shell: bash
       run: |
-        CERTS_DIR=".opcua-test-server-suite/certs"
+        CERTS_DIR=".opcua-test-suite/certs"
         if [ ! -d "$CERTS_DIR/ca" ]; then
           echo "::error::Certificates not found at $CERTS_DIR"
           ls -la "$CERTS_DIR" 2>/dev/null || echo "Directory does not exist"

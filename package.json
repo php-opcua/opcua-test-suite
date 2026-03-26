@@ -1,5 +1,5 @@
 {
-  "name": "opcua-test-server-suite",
+  "name": "opcua-test-suite",
   "version": "1.1.4",
   "description": "Comprehensive OPC UA test server for client library testing",
   "main": "src/index.js",

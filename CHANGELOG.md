@@ -1,5 +1,8 @@
 # Changelog
 
+## v1.1.5 — 2026-03-29
+- Rebranding :) to `php-opcua/opcua-test-suite`
+
 ## v1.1.4 — 2026-03-19
 
 ### Address Space
@@ -64,7 +67,7 @@
 
 - **action.yml**: Fixed bug using `github.action_repository` (empty in
   composite actions) with fallback to `github.repository`, causing the wrong
-  Docker image to be pulled (`opcua-php` instead of `opcua-test-server-suite`).
+  Docker image to be pulled (`opcua-php` instead of `opcua-test-suite`).
   The GHCR image name is now correctly hardcoded.
 
 - **action.yml**: Added GHCR login step with `github.token` to support

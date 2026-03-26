@@ -6,8 +6,8 @@ How to fork this repository and build your own OPC UA test environment tailored 
 
 ```bash
 # Fork on GitHub, then clone your fork
-git clone https://github.com/GianfriAur/opcua-test-server-suite.git
-cd opcua-test-server-suite
+git clone https://github.com/php-opcua/opcua-test-suite.git
+cd opcua-test-suite
 ```
 
 All source code lives in `src/address-space/`. Each file is an independent module that you can modify, replace, or use as a template for new modules.
