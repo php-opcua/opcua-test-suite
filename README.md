@@ -1,4 +1,14 @@
-# OPC UA Test Suite
+<h1 align="center"><strong>OPC UA Test Suite</strong></h1>
+
+<div align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/logo-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="assets/logo-light.svg">
+    <img alt="OPC UA Test Suite" src="./assets/logo-light.svg" width="435">
+  </picture>
+</div>
+
+---
 
 A comprehensive, ready-to-use OPC UA suite built specifically for **integration testing of OPC UA client libraries**. It provides 8 pre-configured server instances covering every major security policy, authentication method, and communication mode defined by the OPC UA specification.
 
