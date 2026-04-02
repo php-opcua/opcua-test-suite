@@ -10,6 +10,20 @@
 
 ---
 
+> ## Deprecated
+>
+> **This project has been deprecated in favor of [`php-opcua/uanetstandard-test-suite`](https://github.com/php-opcua/uanetstandard-test-suite)**, a complete rewrite based on the [OPC Foundation UA-.NETStandard](https://github.com/OPCFoundation/UA-.NETStandard) reference implementation.
+>
+> **Why?** UA-.NETStandard is maintained directly by the OPC Foundation — the organization that defines the OPC UA specification. This makes it the de facto standard: protocol behavior, binary encoding, and security are as close to the spec as possible. Testing against the reference implementation gives you higher confidence in real-world interoperability than testing against a third-party stack.
+>
+> **The new suite is a drop-in replacement** — same ports, same endpoints, same address space, same users, same certificate layout. See the **[Migration Guide](docs/migration.md)** for details.
+>
+> This repository will no longer receive updates. All new features and fixes will be in [`uanetstandard-test-suite`](https://github.com/php-opcua/uanetstandard-test-suite).
+>
+> We apologize for any inconvenience. The migration is straightforward — the new suite is a drop-in replacement and most test code requires no changes.
+
+---
+
 A comprehensive, ready-to-use OPC UA suite built specifically for **integration testing of OPC UA client libraries**. It provides 8 pre-configured server instances covering every major security policy, authentication method, and communication mode defined by the OPC UA specification.
 
 Whether you're building an OPC UA client in Rust, C#, Python, Go, Java, or any other language, this suite gives you a realistic test environment with ~270 nodes, 12 callable methods, dynamic variables, events, alarms, historical data, structured objects, and custom extension objects — all running with a single `docker compose up`.
